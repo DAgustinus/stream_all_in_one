@@ -1,0 +1,16 @@
+version: '1.0'
+services:
+  api:
+    build: .
+    ports:
+      - "7777:7777"
+  db:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+        MYSQL_ROOT_USER: root
+        MYSQL_ROOT_PASSWORD: pass
+        MYSQL_DATABASE: db
+        MYSQL_USER: dap
+        MYSQL_PASSWORD: pass
