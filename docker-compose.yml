@@ -1,5 +1,18 @@
 version: '1.0'
+
 services:
+  consumer:
+    build: ./consumer
+    depends_on:
+      - producer
+    links:
+      - "api:api"
+  producer:
+    build: ./producer
+    links:
+      - "api:api"
+    depends_on:
+      - kafka
   api:
     build: ./app
     ports:
@@ -14,3 +27,25 @@ services:
         MYSQL_DATABASE: db
         MYSQL_USER: dap
         MYSQL_PASSWORD: pass
+  zookeeper:
+    image: 'bitnami/zookeeper:latest'
+    ports:
+      - '2181:2181'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    depends_on:
+      - api
+  kafka:
+    image: 'bitnami/kafka:latest'
+    ports:
+      - 9094:9094
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:9092,OUTSIDE://0.0.0.0:9094
+      # Use the correct listeners to connect b/w internal and external (in this case, internal = "kafka:9092")
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,OUTSIDE://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      ALLOW_PLAINTEXT_LISTENER: yes
+    depends_on:
+      - zookeeper
