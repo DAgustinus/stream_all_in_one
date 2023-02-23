@@ -1,8 +1,16 @@
 version: '1.0'
 
 services:
-  topic_creator:
+  consumer:
     build: ./consumer
+    depends_on:
+      - producer
+    links:
+      - "api:api"
+  producer:
+    build: ./producer
+    links:
+      - "api:api"
     depends_on:
       - kafka
   api:
