@@ -1,7 +1,7 @@
 version: '1.0'
 services:
   api:
-    build: .
+    build: ./app
     ports:
       - "7777:7777"
   db:

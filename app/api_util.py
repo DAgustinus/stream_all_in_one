@@ -26,5 +26,5 @@ class ApiGenerator:
             "lname": fake.last_name(),
             "dob": fake.date(),
             "ssn": fake.ssn(),
-            "state": fake.address()
+            "state": fake.state()
         } for _ in range(amount)]
